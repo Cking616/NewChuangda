@@ -82,6 +82,12 @@ namespace NewChuangda
             return true;
         }
 
+        public bool SendCmd(string cmd)
+        {
+            nanoSendBuffer.Enqueue(cmd);
+            return true;
+        }
+
         private void OnConnected(object sender, EventArgs e)
         {
             nanoSendBuffer.Clear();
@@ -95,7 +101,15 @@ namespace NewChuangda
 
         private void OnRecieve(StringPackageInfo obj)
         {
-            nanoIsIdle = true;
+            if (obj.Key[2] != 'A')
+                nanoIsIdle = true;
+            else
+            {
+                if ( obj.Key.StartsWith("001") )
+                {
+                    nanoIsIdle = true;
+                }
+            }
         }
 
         public void OnTimer()
