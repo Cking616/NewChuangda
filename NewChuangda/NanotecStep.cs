@@ -11,7 +11,7 @@ namespace NewChuangda
 {
     class NanotecFilter : TerminatorReceiveFilter<StringPackageInfo>
     {
-        public NanotecFilter() : base(Encoding.ASCII.GetBytes("\r\0"))
+        public NanotecFilter() : base(new byte[] { (byte)'\r' })
         {
         }
 
@@ -36,7 +36,7 @@ namespace NewChuangda
         private bool nanoIsIdle = true;
         private string nanoLastSend = "";
 
-        private IrRobotFilter nanoFilter = new IrRobotFilter();
+        private NanotecFilter nanoFilter = new NanotecFilter();
         private Queue<string> nanoSendBuffer = new Queue<string>();
 
         private bool nanoTimeEnable;
@@ -92,6 +92,7 @@ namespace NewChuangda
         {
             nanoSendBuffer.Clear();
             nanoTimeEnable = true;
+            nanoIsIdle = true;
         }
 
         private void OnClosed(object sender, EventArgs e)
@@ -101,15 +102,15 @@ namespace NewChuangda
 
         private void OnRecieve(StringPackageInfo obj)
         {
-            if (obj.Key[2] != 'A')
-                nanoIsIdle = true;
-            else
+            if (obj.Key[1] != 'A')
             {
-                if ( obj.Key.StartsWith("001") )
-                {
-                    nanoIsIdle = true;
-                }
+                nanoIsIdle = true;
             }
+
+            //if ( obj.Key.StartsWith("001") )
+            //{
+            //    nanoIsIdle = true;
+            //}
         }
 
         public void OnTimer()
