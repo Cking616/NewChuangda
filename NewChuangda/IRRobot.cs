@@ -100,10 +100,12 @@ namespace NewChuangda
         private bool irNeedFixPoint;
         private bool irIsSendRCP;
         private bool irTimeEnable;
+        private bool irIsErrored;
 
         public bool IsConnected { get => irClient.IsConnected; }
-        public bool NeedReset { get => irNeedReset; }
         public bool IsIdle { get => irIsIdle; }
+        public string CurStation { get => irCurPoint.station; }
+        public bool IsErrored { get => irIsErrored; set => irIsErrored = value; }
 
         public IrRobot(string address, int port)
         {
@@ -116,12 +118,7 @@ namespace NewChuangda
             // Initialize the client with the receive filter and request handler
             irClient.Initialize(irFilter, OnRecieve);
             irClient.ConnectAsync(new IPEndPoint(IPAddress.Parse(irAddress), irPort));
-
-            //irTimer = new DispatcherTimer
-            //{
-            //    Interval = TimeSpan.FromMilliseconds(50)
-            //};
-            //irTimer.Tick += OnTimer;
+            irIsErrored = false;
         }
 
         public bool LearnStation(string station, bool isLow, bool isPerch, int index)
@@ -243,7 +240,7 @@ namespace NewChuangda
             }
             else if (param[0] == "STATION")
             {
-                irCurPoint.station = param[1];
+                irCurPoint.station = param[1].Replace("\"", string.Empty); ;
             }
             else if (param[0] == "INDEX")
             {
@@ -308,6 +305,11 @@ namespace NewChuangda
             if (cmd.IndexOf("\n") != cmd.Length - 1)
                 send = cmd + "\n";
 
+            if( irIsErrored && cmd != "reset\n")
+            {
+                return false;
+            }
+
             irClient.Send(Encoding.ASCII.GetBytes(send));
             string[] cmdList = cmd.Split();
             irLastSend = cmdList[0].ToUpper();
@@ -337,6 +339,7 @@ namespace NewChuangda
             {
                 irResetC = 15;
                 irNeedReset = true;
+                irIsErrored = true;
                 AppLog.Info("系统", "收到错误返回，将会自动Reset");
                 irSendBuffer.Clear();
                 return;

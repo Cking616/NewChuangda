@@ -56,12 +56,6 @@ namespace NewChuangda
             // Initialize the client with the receive filter and request handler
             nanoClient.Initialize(nanoFilter, OnRecieve);
             nanoClient.ConnectAsync(new IPEndPoint(IPAddress.Parse(nanoAddress), nanoPort));
-
-            //irTimer = new DispatcherTimer
-            //{
-            //    Interval = TimeSpan.FromMilliseconds(50)
-            //};
-            //irTimer.Tick += OnTimer;
         }
 
         private bool __SendCmd(string cmd)
@@ -106,11 +100,6 @@ namespace NewChuangda
             {
                 nanoIsIdle = true;
             }
-
-            //if ( obj.Key.StartsWith("001") )
-            //{
-            //    nanoIsIdle = true;
-            //}
         }
 
         public void OnTimer()
@@ -125,8 +114,6 @@ namespace NewChuangda
                 string cmd = nanoSendBuffer.ElementAt(0);
                 if (__SendCmd(cmd))
                 {
-                    //string msg = "执行指令" + cmd;
-                    //AppLog.Info("系统", msg);
                     nanoSendBuffer.Dequeue();
                 }
             }

@@ -134,11 +134,21 @@ namespace NewChuangda
 
         public void OnHighTimer()
         {
+            if (irRobot.IsErrored)
+            {
+                return;
+            }
+
             ioController.OnTimer();
         }
 
         public void OnTimer()
         {
+            if (irRobot.IsErrored)
+            {
+                return;
+            }
+
             irRobot.OnTimer();
             zStep.OnTimer();
             yStep.OnTimer();
