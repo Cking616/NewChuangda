@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using NLua;
 
 namespace NewChuangda
@@ -35,7 +36,7 @@ namespace NewChuangda
         private Lua taskState;
         private IoController ioController;
         private IrRobot irRobot;
-        private NanotecStep xStep;
+        private NanotecStep zStep;
         private NanotecStep yStep;
 
         private bool isInitialized;
@@ -45,7 +46,10 @@ namespace NewChuangda
             this.taskState = new Lua();
             isInitialized = false;
         }
-
+        public static void NcdSleep(int mil)
+        {
+            Thread.Sleep(mil);
+        }
         public bool IsInitialized { get => isInitialized; }
 
         public bool Initialize(string initFile)
@@ -79,14 +83,14 @@ namespace NewChuangda
             ushort ioNumofPoints = ushort.Parse(strNumofPoints);
             ioController = new IoController(ip, port, ioStartAddress, ioNumofPoints);
 
-            ip = taskState["x_step_ip"] as string;
-            strPort = taskState["x_step_port"] as string;
+            ip = taskState["z_step_ip"] as string;
+            strPort = taskState["z_step_port"] as string;
             if (ip == null || strPort == null)
             {
                 return false;
             }
             port = int.Parse(strPort);
-            xStep = new NanotecStep(ip, port);
+            zStep = new NanotecStep(ip, port);
 
             ip = taskState["y_step_ip"] as string;
             strPort = taskState["y_step_port"] as string;
@@ -97,10 +101,13 @@ namespace NewChuangda
             port = int.Parse(strPort);
             yStep = new NanotecStep(ip, port);
 
-            taskState["x_step_state"] = xStep;
+            taskState["z_step_state"] = zStep;
             taskState["y_step_state"] = yStep;
             taskState["io_controller_state"] = ioController;
             taskState["ir_robot_state"] = irRobot;
+            // taskState["task_manager"] = this;
+            taskState.LoadCLRPackage();
+            taskState.DoString(@" import ('NewChuangda') ");
             isInitialized = true;
             return true;
         }
@@ -133,7 +140,7 @@ namespace NewChuangda
         public void OnTimer()
         {
             irRobot.OnTimer();
-            xStep.OnTimer();
+            zStep.OnTimer();
             yStep.OnTimer();
         }
     }

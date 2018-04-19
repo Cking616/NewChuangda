@@ -63,7 +63,7 @@ namespace NcdPacker
         {
             OpenFileDialog dialog = new OpenFileDialog()
             {
-                Filter = "文本文件|*.txt"
+                Filter = "文本文件|*.lua"
             };
             if (dialog.ShowDialog() == true)
             {
