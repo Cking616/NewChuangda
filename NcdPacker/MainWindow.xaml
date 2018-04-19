@@ -1,0 +1,19 @@
+﻿<Window x:Class="NcdPacker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NcdPacker"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Label Content="命令" HorizontalAlignment="Left" Height="30" Margin="36,110,0,0" VerticalAlignment="Top" FontSize="20" Width="50"/>
+        <TextBox x:Name="IrSendTextBox" Width="350"  Margin="100,115,0,0" Text="" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" />
+        <Button  x:Name="IrSendCmd"  Content="执行命令"  Margin="520,100,0,0" VerticalAlignment="Top" Height="50" FontSize="18" Click="IrSend_Click" HorizontalAlignment="Left" Width="120"/>
+
+        <Label Content="路径" HorizontalAlignment="Left" Margin="38,240,0,0" Height="30" VerticalAlignment="Top" FontSize="18"/>
+        <TextBox x:Name="IrScriptFilePath" Margin="100,225,0,0" TextWrapping="Wrap" Text="" IsReadOnly="True" FontSize="12" HorizontalAlignment="Left" Width="200" Height="40" VerticalAlignment="Top"/>
+        <Button x:Name="IrFilePath" Content="选择文件" HorizontalAlignment="Left" Margin="355,225,0,0" Width="90" Height="40" VerticalAlignment="Top" Click="IrFilePath_Click"/>
+        <Button x:Name="IrSendFile" Content="执行脚本" HorizontalAlignment="Left" Margin="505,225,0,0" Width="90" Height="40" VerticalAlignment="Top"  Click="IrSendFile_Click"/>
+    </Grid>
+</Window>

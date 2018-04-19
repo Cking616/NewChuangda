@@ -1,0 +1,10 @@
+﻿ir_robot_ip = "192.168.100.33";
+ir_robot_port = "5001";
+io_controller_ip = "";
+io_controller_port = "";
+io_controller_start_address = "";
+io_controller_num_of_points = "";
+x_step_ip = "";
+x_step_port = "";
+y_step_ip = "";
+y_step_port = "";
