@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Threading;
 using Microsoft.Win32;
 using NewChuangda;
 
@@ -76,7 +77,8 @@ namespace NcdPacker
             string FilePath = IrScriptFilePath.Text;
             if (File.Exists(FilePath))
             {
-                manager.DoScript(FilePath);
+                Thread thread = new Thread(() => { manager.DoScript(FilePath); });
+                thread.Start();
             }
             else
             {

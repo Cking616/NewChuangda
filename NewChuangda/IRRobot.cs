@@ -141,7 +141,10 @@ namespace NewChuangda
 
             cmd += string.Format(" index = {0:D},", index);
 
-            irSendBuffer.Enqueue(cmd);
+            lock (irSendBuffer)
+            {
+                irSendBuffer.Enqueue(cmd);
+            }
             return true;
         }
 
@@ -172,7 +175,10 @@ namespace NewChuangda
                 cmd += ", linear";
             }
 
-            irSendBuffer.Enqueue(cmd);
+            lock (irSendBuffer)
+            {
+                irSendBuffer.Enqueue(cmd);
+            }
             return true;
         }
 
@@ -182,7 +188,10 @@ namespace NewChuangda
 
             cmd += string.Format(" index = {0:D},", index);
 
-            irSendBuffer.Enqueue(cmd);
+            lock (irSendBuffer)
+            {
+                irSendBuffer.Enqueue(cmd);
+            }
             return true;
         }
 
@@ -190,27 +199,39 @@ namespace NewChuangda
         {
             string cmd = "place " + station;
             cmd += string.Format(" index = {0:D},", index);
-            irSendBuffer.Enqueue(cmd);
+            lock (irSendBuffer)
+            {
+                irSendBuffer.Enqueue(cmd);
+            }
             return true;
         }
 
         public bool Grip()
         {
             string cmd = "Grip 1 ON";
-            irSendBuffer.Enqueue(cmd);
+            lock (irSendBuffer)
+            {
+                irSendBuffer.Enqueue(cmd);
+            }
             return true;
         }
 
         public bool Release()
         {
             string cmd = "Grip 1 OFF";
-            irSendBuffer.Enqueue(cmd);
+            lock (irSendBuffer)
+            {
+                irSendBuffer.Enqueue(cmd);
+            }
             return true;
         }
 
         public bool SendCmd(string cmd)
         {
-            irSendBuffer.Enqueue(cmd);
+            lock (irSendBuffer)
+            {
+                irSendBuffer.Enqueue(cmd);
+            }
             return true;
         }
 
@@ -278,7 +299,10 @@ namespace NewChuangda
 
         private void OnConnected(Object state, EventArgs e)
         {
-            irSendBuffer.Clear();
+            lock (irSendBuffer)
+            {
+                irSendBuffer.Clear();
+            }
             irNeedFixPoint = true;
             irIsSendRCP = false;
             irTimeEnable = true;
@@ -305,7 +329,7 @@ namespace NewChuangda
             if (cmd.IndexOf("\n") != cmd.Length - 1)
                 send = cmd + "\n";
 
-            if( irIsErrored && cmd != "reset\n")
+            if( irIsErrored && send != "reset\n")
             {
                 return false;
             }
@@ -341,7 +365,10 @@ namespace NewChuangda
                 irNeedReset = true;
                 irIsErrored = true;
                 AppLog.Info("系统", "收到错误返回，将会自动Reset");
-                irSendBuffer.Clear();
+                lock (irSendBuffer)
+                {
+                    irSendBuffer.Clear();
+                }
                 return;
             }
 
@@ -372,6 +399,18 @@ namespace NewChuangda
             if (key == "MOVE" && body == "END")
             {
                 if(irTargetStation != irCurPoint.station)
+                {
+                    irNeedFixPoint = true;
+                    irIsSendRCP = false;
+                }
+
+                irIsIdle = true;
+                return;
+            }
+
+            if (key == "HOME" && body == "END")
+            {
+                if (irTargetStation != irCurPoint.station)
                 {
                     irNeedFixPoint = true;
                     irIsSendRCP = false;
@@ -415,14 +454,17 @@ namespace NewChuangda
                 __SendCmd("rcp");
             }
 
-            if (irSendBuffer.Count > 0)
-            {
-                string cmd = irSendBuffer.ElementAt(0);
-                if (__SendCmd(cmd))
+            lock(irSendBuffer)
+            { 
+                if (irSendBuffer.Count > 0)
                 {
-                    string msg = "执行指令" + cmd;
-                    AppLog.Info("系统", msg);
-                    irSendBuffer.Dequeue();
+                    string cmd = irSendBuffer.ElementAt(0);
+                    if (__SendCmd(cmd))
+                    {
+                        string msg = "执行指令" + cmd;
+                        AppLog.Info("系统", msg);
+                        irSendBuffer.Dequeue();
+                    }
                 }
             }
         }

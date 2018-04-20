@@ -78,13 +78,19 @@ namespace NewChuangda
 
         public bool SendCmd(string cmd)
         {
-            nanoSendBuffer.Enqueue(cmd);
+            lock (nanoSendBuffer)
+            {
+                nanoSendBuffer.Enqueue(cmd);
+            }
             return true;
         }
 
         private void OnConnected(object sender, EventArgs e)
         {
-            nanoSendBuffer.Clear();
+            lock (nanoSendBuffer)
+            {
+                nanoSendBuffer.Clear();
+            }
             nanoTimeEnable = true;
             nanoIsIdle = true;
         }
@@ -109,12 +115,15 @@ namespace NewChuangda
                 return;
             }
 
-            if (nanoSendBuffer.Count > 0)
-            {
-                string cmd = nanoSendBuffer.ElementAt(0);
-                if (__SendCmd(cmd))
+            lock (nanoSendBuffer)
+            { 
+                if (nanoSendBuffer.Count > 0)
                 {
-                    nanoSendBuffer.Dequeue();
+                    string cmd = nanoSendBuffer.ElementAt(0);
+                    if (__SendCmd(cmd))
+                    {
+                        nanoSendBuffer.Dequeue();
+                    }
                 }
             }
         }

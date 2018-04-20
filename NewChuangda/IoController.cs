@@ -44,15 +44,17 @@ namespace NewChuangda
             if (bit < 0 || bit > 7)
                 return false;
 
-            if (value)
+            lock (ioOutMapBuffer)
             {
-                ioOutMapBuffer[port] = (ushort)(ioOutMapBuffer[port] | (1 << bit));
+                if (value)
+                {
+                    ioOutMapBuffer[port] = (ushort)(ioOutMapBuffer[port] | (1 << bit));
+                }
+                else
+                {
+                    ioOutMapBuffer[port] = (ushort)(ioOutMapBuffer[port] & (~(1 << bit)));
+                }
             }
-            else
-            {
-                ioOutMapBuffer[port] = (ushort)(ioOutMapBuffer[port] & (~(1 << bit)));
-            }
-
             return true;
         }
 
@@ -63,22 +65,31 @@ namespace NewChuangda
             if (bit < 0 || bit > 7)
                 return false;
 
-            int value = (ioOutMapBuffer[port] & (1 << bit));
-            if (value != 0)
+            lock(ioInMapBuffer)
             {
-                return true;
-            }
-            else
-            {
-                return false;
+                int value = (ioInMapBuffer[port] & (1 << bit));
+                if (value != 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
 
         public void OnTimer()
         {
-            ioInMapBuffer = ioMaster.ReadInputRegisters(ioStartAddress, ioNumberOfPoints);
+            lock (ioInMapBuffer)
+            {
+                ioInMapBuffer = ioMaster.ReadInputRegisters(ioStartAddress, ioNumberOfPoints);
+            }
 
-            ioMaster.WriteMultipleRegisters(ioStartAddress, ioOutMapBuffer);
+            lock (ioOutMapBuffer)
+            {
+                ioMaster.WriteMultipleRegisters(ioStartAddress, ioOutMapBuffer);
+            }
         }
     }
 }
