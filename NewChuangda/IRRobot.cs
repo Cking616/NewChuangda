@@ -121,6 +121,17 @@ namespace NewChuangda
             irIsErrored = false;
         }
 
+        public bool CheckStation(string station, bool isLow, bool isPerch, int index)
+        {
+            if (irCurPoint.station != station)
+                return false;
+            if (irCurPoint.isPerch != isPerch)
+                return false;
+            if (irCurPoint.index != index)
+                return false;
+            return true;
+        }
+
         public bool LearnStation(string station, bool isLow, bool isPerch, int index)
         {
             string cmd = "learn " + station;

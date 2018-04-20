@@ -1,14 +1,10 @@
-﻿function sleep(mil_sec)
-	TaskManager.NcdSleep(mil_sec)
-end
+﻿require("ncdlib.lua")
+ir_robot_state:SendCmd("restore ncd")
 
-while true do
-	ir_robot_state:SendCmd("restore ncd")
+while true do	
 	ir_robot_state:MoveStation("HOME", true, false, false, 1, 30)
 
-	z_step_state:SendCmd("#1D")
-	z_step_state:SendCmd("#1y1")
-	z_step_state:SendCmd("#1A")
+	z_home_cmd()
 
 	while ir_robot_state.CurStation ~= "HOME" do
 		TaskManager.NcdSleep(100)
@@ -16,10 +12,7 @@ while true do
 
 	ir_robot_state:MoveStation("PA", true, false, false, 1, 30)
 
-	z_step_state:SendCmd("#1y2")
-	z_step_state:SendCmd("#1o=100")
-	z_step_state:SendCmd("#1A")
-
+	z_go_up_station_cmd()
 
 	while ir_robot_state.CurStation ~= "PA" do
 		TaskManager.NcdSleep(100)
@@ -27,9 +20,7 @@ while true do
 
 	ir_robot_state:MoveStation("BUFFER", true, false, false, 1, 30)
 
-	y_step_state:SendCmd("#1D")
-	y_step_state:SendCmd("#1y1")
-	y_step_state:SendCmd("#1A")
+	y_home_cmd()
 
 	while ir_robot_state.CurStation ~= "BUFFER" do
 		TaskManager.NcdSleep(100)
@@ -45,9 +36,7 @@ while true do
 		TaskManager.NcdSleep(100)
 	end
 
-	y_step_state:SendCmd("#1y3")
-	y_step_state:SendCmd("#1o=100")
-	y_step_state:SendCmd("#1A")
+	y_go_papar_station_cmd()
 
 	sleep(10000)
 end

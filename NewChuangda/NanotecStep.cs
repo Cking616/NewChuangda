@@ -35,6 +35,7 @@ namespace NewChuangda
 
         private bool nanoIsIdle = true;
         private string nanoLastSend = "";
+        private bool nanoMoving = false;
 
         private NanotecFilter nanoFilter = new NanotecFilter();
         private Queue<string> nanoSendBuffer = new Queue<string>();
@@ -43,6 +44,7 @@ namespace NewChuangda
 
         public bool IsConnected { get => nanoClient.IsConnected; }
         public bool IsIdle { get => nanoIsIdle; }
+        public bool IsMoving { get => nanoMoving;}
 
         public NanotecStep(string address, int port)
         {
@@ -93,6 +95,7 @@ namespace NewChuangda
             }
             nanoTimeEnable = true;
             nanoIsIdle = true;
+            NanoMoving = false;
         }
 
         private void OnClosed(object sender, EventArgs e)
@@ -105,6 +108,15 @@ namespace NewChuangda
             if (obj.Key[1] != 'A')
             {
                 nanoIsIdle = true;
+            }
+            else
+            {
+                NanoMoving = true;
+            }
+            
+            if (obj.Key.StartsWith("001"))
+            {
+                NanoMoving = false;
             }
         }
 
