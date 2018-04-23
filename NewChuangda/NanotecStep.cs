@@ -95,7 +95,7 @@ namespace NewChuangda
             }
             nanoTimeEnable = true;
             nanoIsIdle = true;
-            NanoMoving = false;
+            nanoMoving = false;
         }
 
         private void OnClosed(object sender, EventArgs e)
@@ -111,12 +111,12 @@ namespace NewChuangda
             }
             else
             {
-                NanoMoving = true;
+                nanoMoving = true;
             }
             
             if (obj.Key.StartsWith("001"))
             {
-                NanoMoving = false;
+                nanoMoving = false;
             }
         }
 

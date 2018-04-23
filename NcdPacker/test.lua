@@ -1,8 +1,8 @@
-﻿require("ncdlib.lua")
+﻿require("ncdlib")
 ir_robot_state:SendCmd("restore ncd")
 
 while true do	
-	ir_robot_state:MoveStation("HOME", true, false, false, 1, 30)
+	ir_robot_state:MoveStation("HOME", true, false, false, 1, 50)
 
 	z_home_cmd()
 
@@ -10,7 +10,7 @@ while true do
 		TaskManager.NcdSleep(100)
 	end
 
-	ir_robot_state:MoveStation("PA", true, false, false, 1, 30)
+	ir_robot_state:MoveStation("PA", true, false, false, 1, 50)
 
 	z_go_up_station_cmd()
 
@@ -18,7 +18,7 @@ while true do
 		TaskManager.NcdSleep(100)
 	end
 
-	ir_robot_state:MoveStation("BUFFER", true, false, false, 1, 30)
+	ir_robot_state:MoveStation("BUFFER", true, false, false, 1, 50)
 
 	y_home_cmd()
 

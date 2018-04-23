@@ -17,7 +17,7 @@ namespace NewChuangda
         public static void Info(string cls, string log)
         {
             string str = cls + ":" + log;
-            IrRobotRevLog.Enqueue(str);
+            //IrRobotRevLog.Enqueue(str);
         }
 
         public static string ReadLog() { return IrRobotRevLog.Dequeue(); }
@@ -27,7 +27,7 @@ namespace NewChuangda
         public static void Error(string err)
         {
             err = "Error:" + err;
-            IrRobotRevLog.Enqueue(err);
+            //IrRobotRevLog.Enqueue(err);
         }
     }
 
